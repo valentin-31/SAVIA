@@ -1,0 +1,13 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: savia_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - savia_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: vinedos_chilecito
+
+volumes:
+  savia_data:
