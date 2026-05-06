@@ -1,5 +1,5 @@
 # SAVIA
-### Sistema de Almacenamiento de Índices de Vegetación con Inteligencia Agrícola
+### Sistema de Almacenamiento de Índices de Vegetación para Investigación Agronómica
 
 Proyecto Integrador — Bases de Datos II · Universidad Nacional de Chilecito · 2026
 
@@ -29,7 +29,20 @@ de aprendizaje automático pueda aprender a predecir el rendimiento a partir de
 la evolución temporal de los índices espectrales.
 
 ---
+## ¿Qué es SAVIA?
 
+SAVIA es una capa de persistencia para datos satelitales agrícolas. Toma las
+imágenes del satélite Sentinel-2 procesadas en Google Earth Engine, extrae los
+índices espectrales relevantes (NDVI, EVI, NDWI) y los almacena por parcela en
+MongoDB de forma estructurada y consultable.
+
+El sistema está orientado a investigadores y técnicos que necesiten construir o
+entrenar modelos de predicción de rendimiento agrícola. No incluye el modelo de
+machine learning ni una interfaz de usuario final — su propósito es proveer una
+base de datos local, ordenada y eficiente sobre la cual esas capas puedan
+construirse.
+
+---
 ## Arquitectura
 
 ```
