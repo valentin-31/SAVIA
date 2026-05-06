@@ -12,8 +12,8 @@ class Campana:
     se agrega un documento nuevo al final de cada temporada.
     """
 
-    parcela_id: int
-    temporada: int
+    parcela_id: str
+    temporada: str
     fecha_cosecha: date
     rendimiento_kg_ha: float
     notas: str = ""
