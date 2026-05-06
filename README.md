@@ -249,14 +249,16 @@ Documento central del sistema. Almacena los datos geográficos del viñedo
 y su historial satelital completo como array embebido.
 Una sola consulta trae todo el historial sin joins ni operaciones adicionales.
 
-| Campo | Tipo | Descripción |
-|---|---|---|
-| nombre | String | Identificador de la parcela |
-| cultivo | String | Tipo de cultivo (vid, olivo, nogal) |
-| variedad | String | Cepa cultivada (Torrontés, Malbec) |
-| zona | String | Sector geográfico del departamento |
-| geometria | GeoJSON | Polígono de la parcela en WGS84 |
-| observaciones | Array | Historial satelital embebido |
+| Campo | Tipo | Descripción | Requerido |
+|---|---|---|---|
+| nombre | String | Nombre o identificador de la parcela | Sí |
+| cultivo | String | Tipo de cultivo (vid, olivo, nogal) | Sí |
+| variedad | String | Cepa cultivada (Torrontés, Malbec, Bonarda) | No |
+| superficie_ha | Float | Superficie en hectáreas | No |
+| altitud_msnm | Float | Metros sobre el nivel del mar | No |
+| zona | String | Sector geográfico del departamento | Sí |
+| geometria | GeoJSON | Polígono de la parcela en WGS84 | Sí |
+| observaciones | Array | Historial satelital embebido — ver subdocumento | Sí |
 
 ### campanas
 Registra el rendimiento real por temporada agrícola.
