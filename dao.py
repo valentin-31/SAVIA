@@ -77,6 +77,125 @@ class VinedoDAO:
 
         return resultado.modified_count == 1
 
+    ## cambio numero uno respecto al repo original
+    def get_parcelas_cerca_de(self, lat: float, lon: float, radio_km: float) -> list[dict]:
+        """
+        Devuelve todas las parcelas cuya geometría se encuentra
+        dentro del radio indicado desde el punto (lat, lon).
+    
+        Usa $nearSphere sobre el índice 2dsphere del campo geometria,
+        que ya está creado en setup_db.py. Los resultados vienen
+        ordenados de menor a mayor distancia al punto de consulta.
+    
+        Parámetros
+        ----------
+        lat      : latitud del punto de referencia en grados decimales
+        lon      : longitud del punto de referencia en grados decimales
+        radio_km : radio máximo de búsqueda en kilómetros
+    
+        Ejemplo
+        -------
+        # Parcelas dentro de 8 km del centro de Chilecito
+        parcelas = dao.get_parcelas_cerca_de(
+            lat=-29.0, lon=-67.49, radio_km=8
+        )
+        for p in parcelas:
+            print(p["nombre"], p["zona"])
+        """
+        radio_metros = radio_km * 1000
+    
+        return list(
+            self._parcelas.find(
+                {
+                    "geometria": {
+                        "$nearSphere": {
+                            # GeoJSON: longitud siempre va primero
+                            "$geometry": {
+                                "type": "Point",
+                                "coordinates": [lon, lat],
+                            },
+                            "$maxDistance": radio_metros,
+                        }
+                    }
+                },
+                # Proyección: traer solo los campos relevantes para no
+                # arrastrar el array completo de observaciones en esta consulta
+                {
+                    "nombre": 1,
+                    "zona": 1,
+                    "cultivo": 1,
+                    "variedad": 1,
+                    "superficie_ha": 1,
+                    "altitud_msnm": 1,
+                    "geometria": 1,
+                },
+            )
+        )
+    #segunda modificacion respecto al repo original
+    def get_parcelas_en_bbox(self,sw_lat: float,sw_lon: float,
+                            ne_lat: float,ne_lon: float,) -> list[dict]:
+        """
+        Devuelve todas las parcelas cuya geometría cae dentro del
+        rectángulo geográfico definido por las esquinas suroeste (sw)
+        y noreste (ne).
+    
+        Usa $geoWithin + $geometry con un Polygon GeoJSON, que es la
+        forma correcta de hacer esta consulta sobre un índice 2dsphere.
+        No usa $box porque ese operador requiere un índice 2d plano,
+        incompatible con el índice 2dsphere ya creado.
+    
+        Caso de uso típico: el usuario selecciona un área en un mapa
+        y el sistema devuelve todas las parcelas dentro de esa área.
+    
+        Parámetros
+        ----------
+        sw_lat : latitud de la esquina suroeste
+        sw_lon : longitud de la esquina suroeste
+        ne_lat : latitud de la esquina noreste
+        ne_lon : longitud de la esquina noreste
+    
+        Ejemplo
+        -------
+        # Rectángulo que cubre el sector Nonogasta–Los Sarmientos
+        parcelas = dao.get_parcelas_en_bbox(
+            sw_lat=-29.03, sw_lon=-67.52,
+            ne_lat=-28.98, ne_lon=-67.46
+        )
+        for p in parcelas:
+            print(p["nombre"], p["zona"])
+        """
+        # Construir el polígono del bounding box como GeoJSON.
+        # El anillo debe cerrarse: el último punto = el primero.
+        # Orden: suroeste → sureste → noreste → noroeste → suroeste
+        bbox_polygon = {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [sw_lon, sw_lat],  # suroeste
+                    [ne_lon, sw_lat],  # sureste
+                    [ne_lon, ne_lat],  # noreste
+                    [sw_lon, ne_lat],  # noroeste
+                    [sw_lon, sw_lat],  # cierre del anillo
+                ]
+            ],
+        }
+    
+        return list(
+            self._parcelas.find(
+                {"geometria": {"$geoWithin": {"$geometry": bbox_polygon}}},
+                {
+                    "nombre": 1,
+                    "zona": 1,
+                    "cultivo": 1,
+                    "variedad": 1,
+                    "superficie_ha": 1,
+                    "altitud_msnm": 1,
+                    "geometria": 1,
+                },
+            )
+        )
+
+
     def get_observaciones(self, parcela_id: str,
                           desde: date = None,
                           hasta: date = None) -> list[dict]:
