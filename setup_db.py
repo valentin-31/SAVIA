@@ -13,7 +13,7 @@ def setup():
     db = client[DB_NAME]
 
     # Coleccion parcelas
-    parcelas = db["parcela"]
+    parcelas = db["parcelas"]
     parcelas.create_index([("geometria", GEOSPHERE)])
     parcelas.create_index([("zona", ASCENDING)])
     parcelas.create_index([("cultivo", ASCENDING)])
