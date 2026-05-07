@@ -77,7 +77,6 @@ class VinedoDAO:
 
         return resultado.modified_count == 1
 
-    ## cambio numero uno respecto al repo original
     def get_parcelas_cerca_de(self, lat: float, lon: float, radio_km: float) -> list[dict]:
         """
         Devuelve todas las parcelas cuya geometría se encuentra
@@ -132,8 +131,7 @@ class VinedoDAO:
             )
         )
     #segunda modificacion respecto al repo original
-    def get_parcelas_en_bbox(self,sw_lat: float,sw_lon: float,
-                            ne_lat: float,ne_lon: float,) -> list[dict]:
+    def get_parcelas_en_bbox(self,sw_lat: float,sw_lon: float, ne_lat: float,ne_lon: float,) -> list[dict]:
         """
         Devuelve todas las parcelas cuya geometría cae dentro del
         rectángulo geográfico definido por las esquinas suroeste (sw)
