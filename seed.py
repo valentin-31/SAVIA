@@ -5,6 +5,13 @@ from db_models import Parcela, Observacion, Campana
 
 def seed():
     dao = VinedoDAO()
+    """
+    se agregan estos deletes para evitar que pueda duplicarse los datos si se ejecuta
+    por duplicado seed.py
+    """
+    dao._parcelas.delete_many({})
+    dao._campanas.delete_many({})
+    
     print("Iniciando carga de datos de prueba...")
 
     # --- PARCELAS ---
