@@ -77,7 +77,7 @@ SAVIA/
 ## Instalación
  
 ### Requisitos previos
-- Python 3.12 o superior — [python.org/downloads](https://www.python.org/downloads/)
+- Python 3.12 o superior — [python.org/downloads](https://www.python.org/downloads/) "Si tenes problemas con los comandos de python: usa python3 "
 - Docker Desktop corriendo — [docker.com](https://www.docker.com/products/docker-desktop/)
 - Git — [git-scm.com](https://git-scm.com/)
 
