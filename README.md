@@ -187,7 +187,7 @@ Insertando reportes...
 
 ### 8. Ejecutar el notebook de demostración
 ```bash
-jupyter notebook demo.ipynb
+jupyter notebook newDemo.ipynb
 ```
 
 ---
