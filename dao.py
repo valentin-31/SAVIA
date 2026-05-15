@@ -434,18 +434,19 @@ class SaviaDAO:
             {"$match": {"cliente_id": cliente_id, "zona": zona}},
 
             # 2. Traer las observaciones de cada parcela
+            # Nota: parcelas._id es ObjectId, observaciones.parcela_id es string.
+            # Se convierte _id a string con $toString para que el join funcione.
             {"$lookup": {
                 "from": "observaciones",
-                "localField": "_id",     # _id en parcelas es ObjectId
-                "foreignField": "parcela_id",  # string en observaciones
-                "as": "obs",
-                # pipeline interno para filtrar por fecha antes de unir
+                "let": {"pid_str": {"$toString": "$_id"}},
                 "pipeline": [
                     {"$match": {"$expr": {"$and": [
+                        {"$eq": ["$parcela_id", "$$pid_str"]},
                         {"$gte": ["$fecha", anio_inicio + "-09-01"]},
                         {"$lte": ["$fecha", anio_fin + "-03-31"]},
                     ]}}},
                 ],
+                "as": "obs",
             }},
 
             # 3. Expandir el array de observaciones — una fila por obs
@@ -521,10 +522,14 @@ class SaviaDAO:
             {"$match": {"cliente_id": cliente_id, "zona": zona}},
 
             # 2. Traer campañas de cada parcela
+            # Nota: parcelas._id es ObjectId, campanas.parcela_id es string.
+            # Se convierte _id a string con $toString para que el join funcione.
             {"$lookup": {
                 "from": "campanas",
-                "localField": "_id",
-                "foreignField": "parcela_id",
+                "let": {"pid_str": {"$toString": "$_id"}},
+                "pipeline": [
+                    {"$match": {"$expr": {"$eq": ["$parcela_id", "$$pid_str"]}}},
+                ],
                 "as": "campanas",
             }},
 
