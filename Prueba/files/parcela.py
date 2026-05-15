@@ -5,22 +5,18 @@ from dataclasses import dataclass
 class Parcela:
     """
     Documento de la colección parcelas.
-    Representa un viñedo con sus datos estáticos y su geometría geográfica.
+    Representa un viñedo con sus datos estáticos y geográficos.
 
-    Las observaciones satelitales ya no se embeben aquí:
-    viven en su propia colección y se vinculan mediante parcela_id.
-    Esto permite que la serie temporal crezca de forma independiente
-    sin modificar el documento de la parcela.
+    Las observaciones satelitales ya NO se almacenan embebidas.
+    Viven en la colección 'observaciones' y se vinculan mediante
+    el campo parcela_id en cada documento de esa colección.
 
-    El campo cliente_id garantiza que la parcela pertenece a una
-    organización específica y habilita el aislamiento multi-tenant.
+    Colección: parcelas
     """
-
-    cliente_id: str
     nombre: str
     cultivo: str
     zona: str
-    geometria: dict        # GeoJSON Polygon en WGS84
+    geometria: dict
     variedad: str = ""
     superficie_ha: float = 0.0
     altitud_msnm: float = 0.0
@@ -28,7 +24,6 @@ class Parcela:
     def to_dict(self) -> dict:
         """Convierte la parcela a dict serializable para MongoDB."""
         return {
-            "cliente_id": self.cliente_id,
             "nombre": self.nombre,
             "cultivo": self.cultivo,
             "zona": self.zona,
